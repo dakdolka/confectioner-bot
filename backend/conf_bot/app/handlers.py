@@ -1,10 +1,11 @@
-from aiogram import F, Router
+from aiogram import F, Router, Bot
+from config import settings
 from typing import Union, Dict, Any
 from aiogram.filters import CommandStart, Command, Filter
 from aiogram.types import Message, CallbackQuery, WebAppData
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
-import app.keyboards as kb
+# import app.keyboards as kb
 import json
 from DataBase import cursor, db
 
@@ -26,6 +27,7 @@ TypesDict = {
 
 cakeTypesTag = 'cakes_types_'
 router = Router()
+bot = Bot(token=settings.CONF_BOT_TOKEN)
 
 
 class Reg(StatesGroup):

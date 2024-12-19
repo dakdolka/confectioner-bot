@@ -1,7 +1,7 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.filters import callback_data
-from Database.queries.orm import SyncORM
+from app.data import SyncORM
 from aiogram.filters.callback_data import CallbackData
 
 

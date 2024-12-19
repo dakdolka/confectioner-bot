@@ -7,7 +7,7 @@ from typing import Annotated
 
 
 sync_engine = create_engine(
-    url=settings.DATABASE_URL_psycopg,
+    url=settings.db_url,
     echo=False)
 
 session_factory = sessionmaker(sync_engine)

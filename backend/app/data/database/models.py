@@ -1,13 +1,13 @@
 from typing import Any, Optional
 from typing import Annotated
-from sqlalchemy import Table, Column, Integer, String, MetaData, Numeric, ForeignKey, text, BigInteger
+from sqlalchemy import Table, Column, Integer, String, MetaData, Numeric, ForeignKey, text, BigInteger, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from Database.database import Base
+from app.data.database.database import Base
 from datetime import datetime
 
 
 
-time = Annotated[datetime, mapped_column(server_default=text("TIMEZONE('utc', now())"))]
+time = Annotated[datetime, mapped_column(default=func.current_timestamp())]
 intpk = Annotated[int, mapped_column(primary_key=True)]
 
 

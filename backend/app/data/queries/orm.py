@@ -1,9 +1,9 @@
 from sqlalchemy import text, insert, select, or_, and_, BigInteger, cast, case
-from data.database import sync_engine, async_engine, session_factory
-from models import ConditersORM, TCakeORM, TproductORM, TPossibleCakeORM, TIngrTasteORM, TCakeIngrORM, TCakeTypeORM, TCanMakeORM
-from data.database import Base
+from app.data.database.database import sync_engine, session_factory
+from app.data.database.models import ConditersORM, TCakeORM, TproductORM, TPossibleCakeORM, TIngrTasteORM, TCakeIngrORM, TCakeTypeORM, TCanMakeORM
+from app.data.database.database import Base
 from sqlalchemy.orm import selectinload
-from sorting import sort_prods
+from app.data.queries.sorting import sort_prods
 
 
 class SyncORM:
@@ -15,8 +15,6 @@ class SyncORM:
         sync_engine.echo = False
     
         
-
-
     @staticmethod
     def insert_data():
         with session_factory() as session:
