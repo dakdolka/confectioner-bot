@@ -50,7 +50,7 @@ def update(clas, *args):
 
 def cake_type_kb():
     kb = InlineKeyboardBuilder()
-    for elem in SyncORM.get_cake_type():
+    for elem in SyncORM.get_cake_types():
         kb.add(InlineKeyboardButton(text=str(elem[0]), callback_data=Cake(action='cake_type', what=str(elem[0]), dop='', index=f'{elem[1]}').pack()))
     return kb.adjust(2).as_markup()
 

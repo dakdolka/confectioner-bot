@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-from frontend_requests.schemas import FilterKeyElem
-from frontend_requests import crud
+# from app.frontend_requests.schemas import FilterKeyElem
+from app.frontend_requests import crud
 
 router = APIRouter(prefix='/frontend', tags=['frontend'])
 

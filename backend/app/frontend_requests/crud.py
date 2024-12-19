@@ -1,8 +1,8 @@
 from sqlalchemy import select, cast, BigInteger
-from data.database import session_factory
-from data.models import TproductORM, ConditersORM
+from app.data.database.database import session_factory
+from app.data.database.models import TproductORM, ConditersORM
 from sqlalchemy.orm import selectinload
-from backend.app.frontend_requests.sorting import sort_prods
+from app.frontend_requests.sorting import sort_prods
 
 @staticmethod
 def get_sorted_cards(filter_cake):

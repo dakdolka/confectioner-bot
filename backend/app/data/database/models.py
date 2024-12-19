@@ -35,8 +35,7 @@ class TproductORM(Base):
 
     fproductid: Mapped[intpk]
     fuserid: Mapped[int] = mapped_column(BigInteger, ForeignKey('tconditers.fuserid', ondelete="CASCADE"))
-    fcreatingtime: Mapped[time]
-    fiscake: Mapped[bool]
+    fcreatingtime: Mapped[time] 
     fproduct_name: Mapped[str]
 
     fconditer: Mapped['ConditersORM'] = relationship(

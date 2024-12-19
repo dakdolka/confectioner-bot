@@ -1,4 +1,4 @@
-from sqlalchemy import text, insert, select, or_, and_, BigInteger, cast, case
+from sqlalchemy import text, insert, select, or_, and_, BigInteger, cast, case, func
 from app.data.database.database import sync_engine, session_factory
 from app.data.database.models import ConditersORM, TCakeORM, TproductORM, TPossibleCakeORM, TIngrTasteORM, TCakeIngrORM, TCakeTypeORM, TCanMakeORM
 from app.data.database.database import Base
@@ -47,8 +47,8 @@ class SyncORM:
             create += [ConditersORM(fuserid=5962717642, fname='Антон', fexp='40000 лет', finstagram='клшпошкоп', fyoutube='https://youtube.com')]
 
 
-            create += [TproductORM(fuserid=1231231231, fiscake=True, fproduct_name='Муссовый торт с малиновым муссом и банановой начинкой')]
-            create += [TproductORM(fuserid=1231231231, fiscake=True,fproduct_name='Бисквитный торт с банановым бисквитом и клубничной начинкой')]
+            create += [TproductORM(fuserid=1231231231, fproduct_name='Муссовый торт с малиновым муссом и банановой начинкой')]
+            create += [TproductORM(fuserid=1231231231, fproduct_name='Бисквитный торт с банановым бисквитом и клубничной начинкой')]
             create += [TCakeORM(fproductid=1, fingr=1)]
             create += [TCakeORM(fproductid=1, fingr=5)]
             create += [TCakeORM(fproductid=2, fingr=9)]
@@ -59,6 +59,36 @@ class SyncORM:
             
             session.add_all(create)
             session.commit()
+
+    @staticmethod
+    def create_test_confectioners(user_id):
+    # Create test confectioners
+        with session_factory() as session:
+            confectioner1 = ConditersORM(
+                fuserid=user_id,
+                fname='John Doe',
+                fexp='5 years',
+                fabout='Best confectioner in town!',
+                finstagram='@john_doe',
+                fvk='@john_doe_vk',
+                fyoutube='@john_doe_youtube'
+            )
+            session.add(confectioner1)
+
+            # Create test products
+            product1 = TproductORM(
+                fuserid=confectioner1.fuserid,
+                fproduct_name='Chocolate Cake',
+            )
+            session.add(product1)
+
+            product2 = TproductORM(
+                fuserid=confectioner1.fuserid,
+                fproduct_name='Strawberry Pastry',
+            )
+            session.add(product2)
+
+            session.commit()
     
 
 
@@ -68,8 +98,7 @@ class SyncORM:
             profile = ConditersORM(fuserid=userid, fname=name, fexp=exp, fabout=about, finstagram=instagram, fvk=vk, fyoutube=youtube)
             session.add(profile)
             session.commit()
-            print('aa')
-
+            print('Profile created')
     
 
     @staticmethod
@@ -138,7 +167,12 @@ class SyncORM:
     @staticmethod
     def get_ingr_taste(data):
         with session_factory() as session:
-            return session.query(TPossibleCakeORM.fingr_taste).filter(TPossibleCakeORM.fcake_type == data['cake_type'], TPossibleCakeORM.fcake_ingr == data['cake_ingr']).all()
+            return session.query(
+                TPossibleCakeORM.fingr_taste
+                ).filter(
+                    TPossibleCakeORM.fcake_type == data['cake_type'],
+                    TPossibleCakeORM.fcake_ingr == data['cake_ingr']
+                    ).all()
 
     @staticmethod
     def get_cake_types():
@@ -205,4 +239,52 @@ class SyncORM:
                     ans += f'{elem},'
                 ans = ans[:-1] + ';'
         return ans[:-1]
-    
+
+    #методы для кондитерского бота
+    @staticmethod
+    def get_conf_info(id):
+        with session_factory() as session:
+            query = (
+                select(ConditersORM)
+                .where(ConditersORM.fuserid == cast(id, BigInteger))
+                .options(selectinload(ConditersORM.fproducts))
+            )
+
+    @staticmethod
+    def get_ingr_id(ingr):
+        with session_factory() as session:
+            query = (
+                select(TCakeIngrORM.fid)
+                .where(TCakeIngrORM.fcake_ingr == ingr)
+            )
+            res = session.execute(query).scalars().first()
+            return res
+
+    @staticmethod
+    def insert_conf_cake(user_id, data):
+        # {'cake_type': 'Муссовый',
+        #  'cake_type_back': '1',
+        #  'cake_ins': {'Мусс': ['Банан'], 'Начинка': ['Клубника']},
+        #  'cake_ins_back': {'Мусс': ['3'], 'Начинка': ['2']}}
+        cake_type = data['cake_type_back']
+        cake_ins = {SyncORM.get_ingr_id(key): value for key, value in data['cake_ins_back'].items()}
+        with session_factory() as session:
+            id = session.query(func.max(ConditersORM.fuserid)).scalar() + 1
+            for key, value in cake_ins.items():
+                for elem in value:
+                    dop = session.execute(
+                        select(TPossibleCakeORM.fid)
+                        .where(and_(
+                            TPossibleCakeORM.fcake_ingr == key,
+                            TPossibleCakeORM.fingr_taste == elem,
+                            TPossibleCakeORM.fcake_type == cake_type
+                        ))
+                    ).scalars().first()
+                    session.add(TCakeORM(fproductid=id, fingr=dop))
+            session.flush()
+            query = (
+                insert(TproductORM)
+                .values(fuserid=user_id, fproduct_name=data['cake_name'])
+            )
+            session.execute(query)
+            session.commit()

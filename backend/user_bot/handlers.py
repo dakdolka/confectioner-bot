@@ -38,9 +38,8 @@ def order_desc(data):
 async def start(message: Message):
     global chat_id
     chat_id = message.chat.id
-    print('penis')
     await message.answer("Здравствуйте! В этом телеграм боте вы с лёгкостью сможете найти кондитерское решение вашего вопроса)", reply_markup=kb.mainkb, parse_mode='HTML')
-    await bot.send_message(chat_id=chat_id, text="Для начала выберите тип торта.", reply_markup=kb.cake_type_kb(), parse_mode='HTML')
+    # await bot.send_message(chat_id=chat_id, text="Для начала выберите тип торта.", reply_markup=kb.cake_type_kb(), parse_mode='HTML')
 
 
 @rt.callback_query(F.data == 'cakes')

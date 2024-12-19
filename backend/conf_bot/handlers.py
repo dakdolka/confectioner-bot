@@ -5,9 +5,11 @@ from aiogram.filters import CommandStart, Command, Filter
 from aiogram.types import Message, CallbackQuery, WebAppData
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
-# import app.keyboards as kb
+
+from app.data import SyncORM
+import conf_bot.keyboards as kb
 import json
-from DataBase import cursor, db
+# from DataBase import cursor, db
 
 
 	
@@ -52,15 +54,10 @@ class Cake(StatesGroup):
 @router.message(CommandStart())
 async def cmd_start(message: Message):
 	userid = message.from_user.id
-	print(userid)
-	request = f"SELECT fuserid FROM tconditers WHERE fuserid LIKE {userid}"
-	cursor.execute(request)
-	matchids = cursor.fetchall()
-	if matchids:
-		request = f"SELECT fname FROM tconditers WHERE fuserid LIKE {userid}"
-		cursor.execute(request)
-		name = cursor.fetchall()[0][0]
-		await message.answer(text=f'Здравствуйте, {name}! Хотите создать новый продукт?', reply_markup=kb.createNew)
+	conf = SyncORM.get_conditer_info(userid)
+	print(conf)
+	if conf:
+		await message.answer(text=f'Здравствуйте, {conf['name']}! Хотите создать новый продукт?', reply_markup=kb.createNew)
 	else:
 		await message.answer('======Добро пожаловать!!=======\nЗаполните анкету', reply_markup=kb.start)
 
@@ -224,71 +221,154 @@ async def changeName(message: Message, state: FSMContext):
 async def end_reg(callback: CallbackQuery, state: FSMContext):
 	regData = dict(await state.get_data())
 	await state.clear()
-
 	yt = regData.get('fyoutube', '')
 	vk = regData.get('fvk', '')
 	inst = regData.get('finstagram', '')
-	request = f"INSERT INTO tconditers (fuserId, fname, fexp, fabout, fyoutube, fvk, finstagram) VALUES {tuple([callback.from_user.id] + list(regData.values())[:3] + [yt, vk, inst])}"
-	print(request)
-	cursor.execute(request)
-	db.commit()
-
+	SyncORM.create_profile(*tuple([callback.from_user.id] + list(regData.values())[:3] + [yt, vk, inst]))
 	await callback.message.edit_text(text='Регистрация успешно завершена! Хотите создать свой первый продукт?',
 						 reply_markup=kb.createNew)
 
 
-@router.callback_query(F.data == 'CreateNew')  # Выбор торт или что-то другое
-async def create(callback: CallbackQuery):
-	await callback.message.answer(text='Какое творение вы хотите создать?', reply_markup=kb.cakeOrNot)
+# @router.callback_query(F.data == 'CreateNew')  # Выбор торт или что-то другое
+# async def create(callback: CallbackQuery):
+# 	await callback.message.answer(text='Какое творение вы хотите создать?', reply_markup=kb.cakeOrNot)
+# 	await callback.answer()
+
+
+# @router.callback_query(F.data == 'Cake')  # Выбор типа торта
+# async def createCake1(callback: CallbackQuery):
+	# request = f'SELECT fproductid FROM tproducttype'
+	# cursor.execute(request)
+	# fproductid = max(list(map(lambda x: x[0], cursor.fetchall())) or [-1]) + 1
+
+	# request = f'INSERT INTO tproductType (fcreator, ftypeName, fproductid) VALUES ({callback.from_user.id}, "cake", {fproductid})'
+	# cursor.execute(request)
+	# db.commit()
+
+	# request = f"SELECT fcaketypes FROM tcaketypes"
+	# cursor.execute(request)
+	# cakeTypes = list(map(lambda x: x[0], cursor.fetchall()))
+	# print(cakeTypes)
+
+	# cakeTypes = SyncORM.get_cake_types()
+	# await callback.answer()
+	# await callback.message.edit_text(text='Какого вида будет ваш торт?', reply_markup=await kb.createInlineCake(cakeTypes))
+
+
+# @router.callback_query(kb.CakeTypesCb.filter())
+# async def add_social_link(callback: CallbackQuery, callback_data: kb.CakeTypesCb):
+# 	await callback.answer()
+# 	request = f'INSERT INTO ttort (fproductId, ftypename) VALUES ({callback_data.productId}, "{callback_data.cakeType}")'
+# 	cursor.execute(request)
+# 	db.commit()
+
+# 	request = f'SELECT fcakecomponents FROM tcakecomponents WHERE ftypename LIKE "{callback_data.cakeType}"'
+# 	cursor.execute(request)
+# 	components = dict(map(lambda x: (x.split(',')[0], x.split(',')[1]), list(cursor.fetchall())[0][0].split(';')))
+# 	print(components)
+# 	await callback.message.edit_text(text='Выберить компоненты торта', reply_markup=await kb.cakeComponents(components))
+
+
+# @router.callback_query(kb.ChooseComponentCb.filter())
+# async def choose_component(callback: CallbackQuery, callback_data: kb.ChooseComponentCb):
+# 	await callback.answer()
+# 	request = f'SELECT fname FROM {callback_data.componentTable}'
+# 	cursor.execute(request)
+# 	componentTypes = list(map(lambda x: x[0], cursor.fetchall()))
+# 	print(componentTypes)
+# 	await callback.message.edit_text(text=f'Выберите компонент {callback_data.componentName} для вашего торта', reply_markup=await kb.cakeComponentTypes(componentTypes))
+
+
+# @router.message(CommandStart())
+# async def ans(message: Message):
+#     await message.answer(text='hyiasgugtdgasys')
+
+#создание торта
+class Order(StatesGroup):
+    cake_type = State()
+    cake_type_back = State()
+    cake_ins = State()
+    cake_ins_back = State()
+    cake_desc = State()
+    cake_name = State()
+
+
+def dict_to_text(data):
+    s = ''
+    for elem in data.items():
+        s += f'{elem[0]}: {elem[1][0] if elem[1][0] != 1 else 'Не выбрано'}\n\n'
+    return s
+
+def order_desc(data):
+    text=f"\n\nТип вышего торта: {data['cake_type']}\n\nВкусы ингридиентов:\n"
+    text += dict_to_text(data['cake_ins'])
+    return text
+
+@router.callback_query(F.data == 'CreateNew')
+async def cakes(callback: CallbackQuery, state: FSMContext):
 	await callback.answer()
+	await state.set_state(Order.cake_name)
+	await callback.message.edit_text("Для начала Введите название вашего торта.")
+
+@router.message(Order.cake_name)
+async def handle_cake_name(message: Message, state: FSMContext):
+	await state.update_data(cake_name=message.text)
+	await message.answer(f"Название торта: {message.text}\n Теперь введите описание!")
+	await state.set_state(Order.cake_desc)
+
+@router.message(Order.cake_desc)
+async def handle_cake_name(message: Message, state: FSMContext):
+	await state.update_data(cake_desc=message.text)
+	dop = await state.get_data()
+	await message.answer(f"Название торта: <b>{dop['cake_name']}</b>\n Описание: {dop['cake_desc']}\n Выберите тип вашего торта.", reply_markup=kb.cake_type_kb(), parse_mode='HTML')
+
+@router.callback_query(kb.Cake.filter(F.action == 'cake_type'))
+async def add_cake_type(callback: CallbackQuery, callback_data: Cake, state: FSMContext):
+    data = {}
+    dop = {}
+    for elem in SyncORM.get_cake_ingrs(callback_data.what):
+        data[elem] = []
+        dop[elem] = []
+    await state.update_data(cake_type=callback_data.what, cake_type_back=callback_data.index, cake_ins=data, cake_ins_back=dop)
+    await callback.answer()
+    # print(callback_data.what)
+    await callback.message.edit_text(text='Приступим к выбору начинок для ингридиентов.', reply_markup=kb.cake_ingrs_kb(callback_data.what, (await state.get_data())['cake_ins']))
 
 
-@router.callback_query(F.data == 'Cake')  # Выбор типа торта
-async def createCake1(callback: CallbackQuery):
-	request = f'SELECT fproductid FROM tproducttype'
-	cursor.execute(request)
-	fproductid = max(list(map(lambda x: x[0], cursor.fetchall())) or [-1]) + 1
-
-	request = f'INSERT INTO tproductType (fcreator, ftypeName, fproductid) VALUES ({callback.from_user.id}, "cake", {fproductid})'
-	cursor.execute(request)
-	db.commit()
-
-	request = f"SELECT fcaketypes FROM tcaketypes"
-	cursor.execute(request)
-	cakeTypes = list(map(lambda x: x[0], cursor.fetchall()))
-	print(cakeTypes)
-
-	await callback.answer()
-	await callback.message.edit_text(text='Какого вида будет ваш торт?', reply_markup=await kb.createInlineCake(cakeTypes, fproductid))
+@router.callback_query(kb.Cake.filter(F.action == 'elems'))
+async def add_cake_ingr_taste(callback: CallbackQuery, callback_data: Cake, state: FSMContext):
+    await callback.message.edit_text(text='Выберите вкусы ингридиента.', reply_markup=kb.cake_ingr_tastes_kb(callback_data.dop, callback_data.what, (await state.get_data())['cake_ins'][f'{callback_data.what}']), parse_mode='HTML')
+    await callback.answer()
 
 
-@router.callback_query(kb.CakeTypesCb.filter())
-async def add_social_link(callback: CallbackQuery, callback_data: kb.CakeTypesCb):
-	await callback.answer()
-	request = f'INSERT INTO ttort (fproductId, ftypename) VALUES ({callback_data.productId}, "{callback_data.cakeType}")'
-	cursor.execute(request)
-	db.commit()
-
-	request = f'SELECT fcakecomponents FROM tcakecomponents WHERE ftypename LIKE "{callback_data.cakeType}"'
-	cursor.execute(request)
-	components = dict(map(lambda x: (x.split(',')[0], x.split(',')[1]), list(cursor.fetchall())[0][0].split(';')))
-	print(components)
-	await callback.message.edit_text(text='Выберить компоненты торта', reply_markup=await kb.cakeComponents(components))
-
-
-@router.callback_query(kb.ChooseComponentCb.filter())
-async def choose_component(callback: CallbackQuery, callback_data: kb.ChooseComponentCb):
-	await callback.answer()
-	request = f'SELECT fname FROM {callback_data.componentTable}'
-	cursor.execute(request)
-	componentTypes = list(map(lambda x: x[0], cursor.fetchall()))
-	print(componentTypes)
-	await callback.message.edit_text(text=f'Выберите компонент {callback_data.componentName} для вашего торта', reply_markup=await kb.cakeComponentTypes(componentTypes))
+@router.callback_query(kb.Cake.filter(F.action == 'tastes'))
+async def add_to_order_ingrs_taste(callback: CallbackQuery, callback_data: Cake, state: FSMContext):
+    data = (await state.get_data())['cake_ins']
+    dop = (await state.get_data())['cake_ins_back']
+    if callback_data.what in data[callback_data.dop]:
+        data[callback_data.dop].pop(data[callback_data.dop].index(callback_data.what))
+        dop[callback_data.dop].pop(dop[callback_data.dop].index(callback_data.index))
+    else:
+        data[callback_data.dop].append(callback_data.what)
+        dop[callback_data.dop].append(callback_data.index)
+    await state.update_data(cake_ins=data, cake_ins_back=dop)
+    await callback.answer()
+    await callback.message.edit_text(text='Выберите вкусы ингридиента.', reply_markup=kb.cake_ingr_tastes_kb((await state.get_data())['cake_type'], callback_data.dop, (await state.get_data())['cake_ins'][f'{callback_data.dop}']), parse_mode='HTML')
 
 
 
+@router.callback_query(kb.Cake.filter(F.action == 'confirm_tastes'))
+async def confirm_ingrs_taste(callback: CallbackQuery, callback_data: Cake, state: FSMContext):
+    await callback.message.edit_text(text='Продолжайте выбор начинок соответствующих ингридиентов. По завершении нажмите кнопку \n"Опубликовать торт ✅".', reply_markup=kb.cake_ingrs_kb((await state.get_data())['cake_type'], (await state.get_data())['cake_ins']), parse_mode='HTML')
+    await callback.answer()
 
 
+@router.callback_query(kb.Cake.filter(F.action=='confirm_order'))
+async def confirm_order(callback: CallbackQuery, callback_data: Cake, state: FSMContext):
+    await callback.answer()
+    print((await state.get_data()))
+	
+    SyncORM.insert_conf_cake(callback.from_user.id, await state.get_data())
 
 
 
