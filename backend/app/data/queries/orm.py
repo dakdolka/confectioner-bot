@@ -3,7 +3,7 @@ from data.database import sync_engine, async_engine, session_factory
 from models import ConditersORM, TCakeORM, TproductORM, TPossibleCakeORM, TIngrTasteORM, TCakeIngrORM, TCakeTypeORM, TCanMakeORM
 from data.database import Base
 from sqlalchemy.orm import selectinload
-from sorting import sort_prods
+from backend.app.frontend_requests.sorting import sort_prods
 
 
 class SyncORM:
