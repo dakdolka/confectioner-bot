@@ -1,40 +1,18 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS
+from fastapi import FastAPI
+import uvicorn
+from starlette.middleware.cors import CORSMiddleware
+from frontend_requests.views import router as frontend_router
 
-import os
-import sys
-
-sys.path.insert(1, os.path.join(sys.path[0], '..'))
-
-from queries.orm import SyncORM, AsyncORM
-
-
-
-app = Flask(__name__)
-CORS(app)
-
-@app.route('/get_cards', methods=['GET'])
-def home():
-    data = request.args.get('key').split(';')
-    print(f"Received data: {data}")
-    filter_cake = [int(data[0]), dict(map(lambda x: (x.split(':')[0], x.split(':')[1].split(',')), data[1:]))]
-    print(filter_cake)
-    
-    SyncORM.create_table()
-    SyncORM.insert_data()
+app = FastAPI()
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=['*'],
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
+app.include_router(frontend_router)
 
 
-    res = SyncORM.get_result(filter_cake)
-    print(res)
-
-    return jsonify(res)
-
-
-@app.route('/get_conditer_info')
-def cond_info():
-    conditer_id = request.args.get('id')
-    return jsonify(SyncORM.get_conditer_info(conditer_id))
-
-
-if __name__ == '__main__':
-    app.run(port=5001)
+if  __name__ == '__main__':
+    uvicorn.run('main:app', reload=True)
