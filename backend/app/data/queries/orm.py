@@ -1,10 +1,9 @@
-from sqlalchemy import text, insert, select, or_, and_, BigInteger, cast
+from sqlalchemy import text, insert, select, or_, and_, BigInteger, cast, case
 from data.database import sync_engine, async_engine, session_factory
 from models import ConditersORM, TCakeORM, TproductORM, TPossibleCakeORM, TIngrTasteORM, TCakeIngrORM, TCakeTypeORM, TCanMakeORM
 from data.database import Base
 from sqlalchemy.orm import selectinload
 from sorting import sort_prods
-
 
 
 class SyncORM:
@@ -64,25 +63,6 @@ class SyncORM:
             session.commit()
     
 
-    @staticmethod
-    def select_data():
-        with session_factory() as session:
-            fuserid = 1
-            # fname = session.get(ConditersORM, {"fuserid": fuserid})
-            query = select(ConditersORM)
-            res = session.execute(query)
-            conditers = res.scalars().all() 
-            print(f"{conditers = }")
-
-
-    @staticmethod
-    def update_data(conditer_id = 5962717642, new_username = 'Антон (бог)'):
-        with session_factory() as session:
-            conditer = session.get(ConditersORM, {"fuserid": conditer_id})
-            conditer.fname = new_username
-            session.commit()
-    
-
 
     @staticmethod
     def create_profile(userid, name, exp, about=None, instagram=None, vk=None, youtube=None):
@@ -91,14 +71,7 @@ class SyncORM:
             session.add(profile)
             session.commit()
             print('aa')
-    
 
-    @staticmethod
-    def get_cake_types():
-        with session_factory() as session:
-            query = select(TCakeTypeORM)
-            res = session.execute(query).scalars().all()
-            return {elem.__dict__['fid']: elem.__dict__['fcake_type'] for elem in res}
     
 
     @staticmethod
@@ -109,13 +82,6 @@ class SyncORM:
                 
             return [elem.__dict__['fcake_ingr'] for elem in res]
     
-
-    # @staticmethod
-    # def get_cake_ingr():
-    #     with session_factory() as session:
-    #         query = select(TCakeIngrORM)
-    #         res = session.execute(query).scalars().all()
-    #         return {elem.__dict__['fid']: elem.__dict__['fcake_ingr'] for elem in res}
 
     @staticmethod
     def get_result(filter_cake):
@@ -171,5 +137,74 @@ class SyncORM:
             }
             return conditer_info
 
-class AsyncORM:
-    pass
+    @staticmethod
+    def get_ingr_taste(data):
+        with session_factory() as session:
+            return session.query(TPossibleCakeORM.fingr_taste).filter(TPossibleCakeORM.fcake_type == data['cake_type'], TPossibleCakeORM.fcake_ingr == data['cake_ingr']).all()
+
+    @staticmethod
+    def get_cake_types():
+        with session_factory() as session:
+            query = select(TCakeTypeORM.fcake_type, TCakeTypeORM.fid)
+            res = session.execute(query).all()
+            print(res)
+            return res
+    
+    @staticmethod
+    def get_cake_ingrs(cake_type):
+        with session_factory() as session:
+            query = (
+                select(TCakeIngrORM.fcake_ingr, TCakeIngrORM.fid)
+                .where(and_(
+                    TCakeTypeORM.fcake_type == cake_type,
+                    TCakeTypeORM.fid == TPossibleCakeORM.fcake_type,
+                    TCakeIngrORM.fid == TPossibleCakeORM.fcake_ingr
+                    ))
+                .distinct()
+            )
+            res = session.execute(query)
+            return res.scalars().all()
+    
+
+    @staticmethod
+    def getcake_ingr_taste(cake_type, cake_ingr):
+        ans = []
+        with session_factory() as session:
+            query = (
+                select(TIngrTasteORM.fingr_taste, TIngrTasteORM.fid)
+                .where(and_(
+                    TPossibleCakeORM.fcake_ingr == TCakeIngrORM.fid,
+                    TPossibleCakeORM.fcake_type == TCakeTypeORM.fid,
+                    TCakeIngrORM.fcake_ingr == cake_ingr,
+                    TCakeTypeORM.fcake_type == cake_type
+                    ))
+                .distinct()
+            )
+            res = session.execute(query).all()
+            print(res)
+            return res
+        
+    
+    @staticmethod
+    def get_tastes_id(data: dict):
+        cake_type_back = data['cake_type_back']
+        cake_type = data['cake_type']
+        cake_ingr = data['cake_ins_back']
+        with session_factory() as session:
+            query = (select(TCakeIngrORM.fid)
+                    .where(and_(
+                        TCakeIngrORM.fcake_ingr.in_(cake_ingr),
+                        TCakeTypeORM.fcake_type == cake_type
+                        ))
+                    )
+            res = session.execute(query).scalars().all()
+        ans = f'{cake_type_back};'
+        dop = list(cake_ingr.values())
+        for i in range(len(res)):
+            if len(dop[i]) != 0:
+                ans += f'{res[i]}:'
+                for elem in dop[i]:
+                    ans += f'{elem},'
+                ans = ans[:-1] + ';'
+        return ans[:-1]
+    
