@@ -1,6 +1,6 @@
 from sqlalchemy import select, cast, BigInteger
-from data.database import session_factory
-from data.models import TproductORM, ConditersORM
+from data.database.database import session_factory
+from data.database.models import TproductORM, ConditersORM
 from sqlalchemy.orm import selectinload
 from backend.app.frontend_requests.sorting import sort_prods
 
