@@ -38,18 +38,13 @@ class Bot_creator():
         self.dp.include_router(self.rt)
         await self.dp.start_polling(self.bot)
 
-def start_fastapi():
-    uvicorn.run('run:app', reload=True)
-
-
 user_bot = Bot_creator(user_bot, user_rt)
 conf_bot = Bot_creator(conf_bot, conf_rt)
 
-async def main():
-    await asyncio.gather(user_bot.run(), conf_bot.run())
 
-def run_bots():
-    asyncio.run(main())
+@app.on_event('startup')
+async def run():
+    await asyncio.gather(user_bot.run(), conf_bot.run())
 
 
 if __name__ == '__main__':
@@ -57,15 +52,6 @@ if __name__ == '__main__':
         SyncORM.create_table()
         SyncORM.insert_data()
         SyncORM.create_test_confectioners(5616937568)
-
-        bot_process = multiprocessing.Process(target=run_bots)
-        # app_process = multiprocessing.Process(target=start_fastapi)
-
-        bot_process.start()
-        # app_process.start()
-
-        bot_process.join()
-        # app_process.join()
-        asyncio.run(main())
+        uvicorn.run('main:app')
     except KeyboardInterrupt:
         print('Exit')
