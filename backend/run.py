@@ -67,5 +67,7 @@ if __name__ == '__main__':
         bot_process.join()
         # app_process.join()
         asyncio.run(main())
+
+        
     except KeyboardInterrupt:
         print('Exit')
