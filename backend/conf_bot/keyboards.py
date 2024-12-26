@@ -2,6 +2,7 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.filters.callback_data import CallbackData
 from app.data import SyncORM
+from aiogram.types import Message
 
 
 class SocialMediaCb(CallbackData, prefix='social'):
@@ -25,6 +26,9 @@ class ChooseComponentCb(CallbackData, prefix='chooseComponentCb'):
 
 class ChooseComponentTypeCb(CallbackData, prefix='chooseComponentCb'):
 	componentTypeName: str
+      
+class ChangeCallback(CallbackData, prefix='changeCallback'):
+      pass
 
 
 start = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text='Начать', callback_data='Start'),
@@ -39,8 +43,8 @@ cakeOrNot = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text='Т
 cancel = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text='Отмена', callback_data='Social_cancel')]])
 
 
-approve = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text='Подтвердить', callback_data='end_reg'),
-												   InlineKeyboardButton(text='Исправить', callback_data='changeProfile')]])
+# approve = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text='Подтвердить', callback_data='end_reg'),
+# 												   InlineKeyboardButton(text='Исправить', callback_data='changeProfile')]])
 
 skip1 = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text='Пропустить', callback_data='skip1')]])
 
@@ -183,3 +187,8 @@ def cake_ingr_tastes_kb(cake_type, cake_ingr, t_tastes):
             kb.add(InlineKeyboardButton(text=str(elem[0]), callback_data=Cake(action='tastes', what=f'{elem[0]}', dop=str(cake_ingr), index=str(elem[1])).pack()))
     kb.row(InlineKeyboardButton(text='Подтвердить ✅', callback_data=Cake(action='confirm_tastes', what=f'{cake_ingr}', dop = str(cake_ingr), index='').pack()))
     return kb.adjust(2).as_markup()
+
+def kb_for_approve():
+      approve = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text='Подтвердить', callback_data='end_reg'),
+										   InlineKeyboardButton(text='Исправить', callback_data=ChangeCallback().pack())]])
+      return approve

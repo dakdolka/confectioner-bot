@@ -42,6 +42,8 @@ class Reg(StatesGroup):
 	changeName = State()
 	changeExp = State()
 	changeAbout = State()
+	approve_text = State()
+	approve_mes_id = State()
 
 class Cake(StatesGroup):
 	name = State()
@@ -49,6 +51,20 @@ class Cake(StatesGroup):
 	filling = State()
 	newType = State()
 	newType2 = State()
+
+def build_approve(data):
+	text = f'''
+Подтвердите данные профиля:
+Имя: {data.get("fname", "Не указано")}
+Опыт работы: {data.get("fexp", "Не указано")}
+О себе: {data.get("fabout", "Не указано")}
+
+СОЦСЕТИ
+
+Youtube: {data.get("fyoutube", "Не указано")}
+VK: {data.get("fvk", "Не указано")}
+Instagram: {data.get("finstagram", "Не указано")}'''
+	return text
 
 
 @router.message(CommandStart())
@@ -60,13 +76,6 @@ async def cmd_start(message: Message):
 		await message.answer(text=f'Здравствуйте, {conf['name']}! Хотите создать новый продукт?', reply_markup=kb.createNew)
 	else:
 		await message.answer('======Добро пожаловать!!=======\nЗаполните анкету', reply_markup=kb.start)
-
-
-@router.message(Command("w"))
-async def hello_start(message: Message):
-	userid = message.from_user.id
-	print(userid)
-	await message.answer('jnjnjnjnjn', reply_markup=kb.webapp)
 
 
 class WebAppDataFilter(Filter):
@@ -165,14 +174,22 @@ async def add_social_link(callback: CallbackQuery, state: FSMContext, callback_d
 async def approve(callback: CallbackQuery, state: FSMContext):
 	await callback.answer()
 	data = dict(await state.get_data())
-	await callback.message.edit_text(text=f'Подтвердите данные профиля:\nИмя: {data.get("fname", "Не указано")} \nОпыт работы: {data.get("fexp", "Не указано")} \nО себе: {data.get("fabout", "Не указано")} \n\nСОЦСЕТИ\n\nYoutube: {data.get("fyoutube", "Не указано")} \nVK: {data.get("fvk", "Не указано")} \nInstagram: {data.get("finstagram", "Не указано")} \n',
-									 reply_markup=kb.approve)
+	approve_text = build_approve(data)
+	await state.update_data(approve_text=approve_text)
+	await state.update_data(approve_mes_id=callback.message)
+	await callback.message.edit_text(text=dict(await state.get_data())['approve_text'],
+									 reply_markup=kb.kb_for_approve())
 
 
-@router.callback_query(F.data == 'changeProfile')
-async def choose_change(callback: CallbackQuery):
+#  await bot.edit_message_text(f'Отправьте название и исполнителя желаемого трека. Как закончите - нажмите кнопку "Подтвердить✅"! \n\n{message_edit_for_songs(data, False)}', chat_id=message.chat.id, message_id=data['song_list_id'], reply_markup=kb_confirm_for_name)
+@router.callback_query(kb.ChangeCallback.filter())
+async def choose_change(callback: CallbackQuery, state: FSMContext):
 	await callback.answer()
-	await callback.message.answer(text='Что вы хотели бы исправить?', reply_markup=await kb.changeProfileKb())
+	await bot.edit_message_text(f'{build_approve(dict(await state.get_data()))}\n\nЧто вы хотите исправить?',
+							chat_id=callback.message.chat.id,
+							message_id=callback.message.message_id, 
+							reply_markup=await kb.changeProfileKb())
+	# await callback.message.answer(text='Что вы хотели бы исправить?', reply_markup=await kb.changeProfileKb())
 
 
 @router.callback_query(F.data == 'changeProfileCancel')
@@ -197,24 +214,36 @@ async def change_data(callback: CallbackQuery, callback_data: kb.ChangeProfileCb
 async def changeName(message: Message, state: FSMContext):
 	await state.update_data(fname=message.text)
 	data = dict(await state.get_data())
-	await message.answer(text=f'Подтвердите данные профиля:\nИмя: {data.get("fname", "Не указано")} \nОпыт работы: {data.get("fexp", "Не указано")} \nО себе: {data.get("fabout", "Не указано")} \n\nСОЦСЕТИ\n\nYoutube: {data.get("fyoutube", "Не указано")} \nVK: {data.get("fvk", "Не указано")} \nInstagram: {data.get("finstagram", "Не указано")} \n',
-									 reply_markup=kb.approve)
+	await bot.delete_message(message.chat.id, message.message_id)
+	await bot.edit_message_text(
+		text=build_approve(data),
+		chat_id=data['approve_mes_id'].chat.id,
+		message_id=data['approve_mes_id'].message_id,
+		reply_markup=kb.kb_for_approve())
 
 
 @router.message(Reg.changeExp)
 async def changeName(message: Message, state: FSMContext):
 	await state.update_data(fexp=message.text)
 	data = dict(await state.get_data())
-	await message.answer(text=f'Подтвердите данные профиля:\nИмя: {data.get("fname", "Не указано")} \nОпыт работы: {data.get("fexp", "Не указано")} \nО себе: {data.get("fabout", "Не указано")} \n\nСОЦСЕТИ\n\nYoutube: {data.get("fyoutube", "Не указано")} \nVK: {data.get("fvk", "Не указано")} \nInstagram: {data.get("finstagram", "Не указано")} \n',
-									 reply_markup=kb.approve)
+	await bot.delete_message(message.chat.id, message.message_id)
+	await bot.edit_message_text(
+		text=build_approve(data),
+		chat_id=data['approve_mes_id'].chat.id,
+		message_id=data['approve_mes_id'].message_id,
+		reply_markup=kb.kb_for_approve())
 
 
 @router.message(Reg.changeAbout)
 async def changeName(message: Message, state: FSMContext):
 	await state.update_data(fabout=message.text)
 	data = dict(await state.get_data())
-	await message.answer(text=f'Подтвердите данные профиля:\nИмя: {data.get("fname", "Не указано")} \nОпыт работы: {data.get("fexp", "Не указано")} \nО себе: {data.get("fabout", "Не указано")} \n\nСОЦСЕТИ\n\nYoutube: {data.get("fyoutube", "Не указано")} \nVK: {data.get("fvk", "Не указано")} \nInstagram: {data.get("finstagram", "Не указано")} \n',
-									 reply_markup=kb.approve)
+	await bot.delete_message(message.chat.id, message.message_id)
+	await bot.edit_message_text(
+		text=build_approve(data),
+		chat_id=data['approve_mes_id'].chat.id,
+		message_id=data['approve_mes_id'].message_id,
+		reply_markup=kb.kb_for_approve())
 
 
 @router.callback_query(F.data == 'end_reg')
@@ -367,9 +396,4 @@ async def confirm_ingrs_taste(callback: CallbackQuery, callback_data: Cake, stat
 async def confirm_order(callback: CallbackQuery, callback_data: Cake, state: FSMContext):
     await callback.answer()
     print((await state.get_data()))
-	
     SyncORM.insert_conf_cake(callback.from_user.id, await state.get_data())
-
-
-
-

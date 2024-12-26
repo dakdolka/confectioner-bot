@@ -56,7 +56,7 @@ if __name__ == '__main__':
     try:
         SyncORM.create_table()
         SyncORM.insert_data()
-        SyncORM.create_test_confectioners(5616937568)
+        # SyncORM.create_test_confectioners(5616937568)
 
         bot_process = multiprocessing.Process(target=run_bots)
         # app_process = multiprocessing.Process(target=start_fastapi)
