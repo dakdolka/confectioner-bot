@@ -21,8 +21,6 @@ def get_sorted_cards(filter_cake):
                 stats = ingr.fingrcomb
                 ingr_taste_dict[stats.fcake_ingr] = stats.fingr_taste
             prods[(elem.fproductid, (elem.fproduct_name, elem.fuserid))] = [stats.fcake_type, ingr_taste_dict]
-        
-        print(prods)
         prods = list(map(lambda x: {'title': x[0][1][0], 'creator_id': x[0][1][1]}, sorted(prods.items(), key=sort_prods_with_filter)))
         return prods
 

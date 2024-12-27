@@ -44,7 +44,6 @@ class SyncORM:
 
             
             create += [ConditersORM(fuserid=1231231231, fname='Антон', fexp='40 лет на заводе')]
-            create += [ConditersORM(fuserid=5962717642, fname='Антон', fexp='40000 лет', finstagram='клшпошкоп', fyoutube='https://youtube.com')]
 
 
             create += [TproductORM(fuserid=1231231231, fproduct_name='Муссовый торт с малиновым муссом и банановой начинкой')]
@@ -280,6 +279,7 @@ class SyncORM:
                             TPossibleCakeORM.fcake_type == cake_type
                         ))
                     ).scalars().first()
+                    print(dop)
                     session.add(TCakeORM(fproductid=id, fingr=dop))
             session.flush()
             query = (

@@ -51,7 +51,18 @@ if __name__ == '__main__':
     try:
         SyncORM.create_table()
         SyncORM.insert_data()
-        SyncORM.create_test_confectioners(5616937568)
-        uvicorn.run('main:app')
+        # SyncORM.create_test_confectioners(5616937568)
+
+        bot_process = multiprocessing.Process(target=run_bots)
+        app_process = multiprocessing.Process(target=start_fastapi)
+
+        bot_process.start()
+        app_process.start()
+
+        bot_process.join()
+        app_process.join()
+        asyncio.run(main())
+
+        
     except KeyboardInterrupt:
         print('Exit')
