@@ -395,5 +395,10 @@ async def confirm_ingrs_taste(callback: CallbackQuery, callback_data: Cake, stat
 @router.callback_query(kb.Cake.filter(F.action=='confirm_order'))
 async def confirm_order(callback: CallbackQuery, callback_data: Cake, state: FSMContext):
     await callback.answer()
-    print((await state.get_data()))
-    SyncORM.insert_conf_cake(callback.from_user.id, await state.get_data())
+    data = await state.get_data()
+    try:
+        SyncORM.insert_conf_cake(callback.from_user.id, await state.get_data())
+    except Exception as e:
+        await bot.edit_message_text(text=f'Торт с такими ингридиентами невозможен. Попробуйте ещё раз. {data['approve_text']}', chat_id=callback.message.chat.id, message_id=callback.message.message_id)
+        print()
+    print('inserted')

@@ -59,13 +59,13 @@ if __name__ == '__main__':
         # SyncORM.create_test_confectioners(5616937568)
 
         bot_process = multiprocessing.Process(target=run_bots)
-        # app_process = multiprocessing.Process(target=start_fastapi)
+        app_process = multiprocessing.Process(target=start_fastapi)
 
         bot_process.start()
-        # app_process.start()
+        app_process.start()
 
         bot_process.join()
-        # app_process.join()
+        app_process.join()
         asyncio.run(main())
 
         
