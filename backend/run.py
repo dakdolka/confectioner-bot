@@ -38,13 +38,18 @@ class Bot_creator():
         self.dp.include_router(self.rt)
         await self.dp.start_polling(self.bot)
 
+def start_fastapi():
+    uvicorn.run('run:app', reload=True)
+
+
 user_bot = Bot_creator(user_bot, user_rt)
 conf_bot = Bot_creator(conf_bot, conf_rt)
 
-
-@app.on_event('startup')
-async def run():
+async def main():
     await asyncio.gather(user_bot.run(), conf_bot.run())
+
+def run_bots():
+    asyncio.run(main())
 
 
 if __name__ == '__main__':
