@@ -73,10 +73,14 @@ async def cmd_start(message: Message):
 	conf = SyncORM.get_conditer_info(userid)
 	print(conf)
 	if conf:
-		await message.answer(text=f'Здравствуйте, {conf['name']}! Хотите создать новый продукт?', reply_markup=kb.createNew)
+		await message.answer(text=f'Здравствуйте, {conf['name']}! Чем займёмся?', reply_markup=kb.createNew)
 	else:
 		await message.answer('======Добро пожаловать!!=======\nЗаполните анкету', reply_markup=kb.start)
-
+  
+@router.callback_query(F.data == 'myCakes')
+async def myCakes(callback: CallbackQuery):
+	await callback.answer()
+	pass
 
 class WebAppDataFilter(Filter):
 	async def __call__(self, message: Message, **kwargs) -> Union[bool, Dict[str, Any]]:
@@ -398,7 +402,9 @@ async def confirm_order(callback: CallbackQuery, callback_data: Cake, state: FSM
     data = await state.get_data()
     try:
         SyncORM.insert_conf_cake(callback.from_user.id, await state.get_data())
+        await bot.edit_message_text(text=f'Поздравляем с созданием нового продукта!\n\nВыберите следующее действие кнопочками ниже)', chat_id=callback.message.chat.id, message_id=callback.message.message_id, reply_markup=kb.createNew)
     except Exception as e:
-        await bot.edit_message_text(text=f'Торт с такими ингридиентами невозможен. Попробуйте ещё раз. {data['approve_text']}', chat_id=callback.message.chat.id, message_id=callback.message.message_id)
-        print()
-    print('inserted')
+        await bot.edit_message_text(text=f'Торт с такими ингридиентами невозможен. Попробуйте ещё раз. {data['approve_text']}', chat_id=callback.message.chat.id, message_id=callback.message.message_id, reply_markup=kb.kb_for_approve())
+    finally:
+    	print('inserted')
+    

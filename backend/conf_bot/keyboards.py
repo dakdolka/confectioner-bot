@@ -34,8 +34,8 @@ class ChangeCallback(CallbackData, prefix='changeCallback'):
 start = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text='Начать', callback_data='Start'),
 											   InlineKeyboardButton(text='Отмена', callback_data='Cancel')]])
 
-createNew = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text='Да!', callback_data='CreateNew'),
-												   InlineKeyboardButton(text='Нет(', callback_data='Cancel')]])
+createNew = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text='Создать торт', callback_data='CreateNew'),
+												   InlineKeyboardButton(text='Мои торты', callback_data='myCakes')]])
 
 cakeOrNot = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text='Торт', callback_data='Cake'),
 												   InlineKeyboardButton(text='Другое', callback_data='Another')]])
