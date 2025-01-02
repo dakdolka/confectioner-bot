@@ -15,23 +15,68 @@ header {
 }
 
 img {
-    width: 310px;
-    height: 310px;
+    width: 250px;
+    height: 250px;
     border-radius: 50%;
-    padding-right: 60px;
+    margin-right: 60px;
 }
 
 .username {
-    font-size: 36px;
-    padding-bottom: 21px;
+    font-size: 34px;
+    padding-bottom: 27px;
 }
 
 .social-media {
-    font-size: 24px;
-    padding-bottom: 31px;
+    font-size: 20px;
+    padding-bottom: 41px;
 }
 
 .descript {
-    font-size: 24px;
-    width: 600px;
+    font-size: 18px;
+    width: 500px;
+}
+
+.edit-bt {
+    /* width: 226px; */
+    padding: 10px;
+    border-radius: 15px;
+    border-style: none;
+    font-size: 16px;
+    color:rgb(77, 77, 77);
+}
+
+.block1 {
+    display: flex;
+}
+
+.btns {
+    display: flex;
+    align-items: end;
+    
+}
+
+.bt {
+    border-style: none;
+    border-radius: 15px;
+    background-color: rgba(0, 0, 0, 0);
+    color: #6b6b6b;
+    font-size: 22px;
+
+}
+
+.navbar {
+    padding: 50px 61px 20px 61px;
+    display: flex;
+    justify-content: space-between; 
+    align-items: end;
+}
+
+#btn1 {
+    margin-right: 60px;
+}
+.active {
+    font-size: 26px;
+    color: black;
+    position: relative;
+    bottom: -1px;
 }
