@@ -1,14 +1,18 @@
-from aiogram import Router, F
+from aiogram import Router, F, Bot
 from aiogram.filters import CommandStart, Command, callback_data
 from aiogram.types import Message, CallbackQuery
-import applications.keyboards as kb
+import user_bot.keyboards as kb
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
-from applications.keyboards import Cake
-from Database.queries.orm import SyncORM
-from main import bot, rt
+from user_bot.keyboards import Cake
+from app.data import SyncORM
+from config import settings
+# from user_bot.dop_file import user_bot as bot
 # from collections import defauldict
 chat_id = 0
+
+rt = Router()
+bot = Bot(token=settings.USER_BOT_TOKEN)
 
 
 class Order(StatesGroup):
@@ -34,9 +38,8 @@ def order_desc(data):
 async def start(message: Message):
     global chat_id
     chat_id = message.chat.id
-    print('penis')
     await message.answer("Здравствуйте! В этом телеграм боте вы с лёгкостью сможете найти кондитерское решение вашего вопроса)", reply_markup=kb.mainkb, parse_mode='HTML')
-    await bot.send_message(chat_id=chat_id, text="Для начала выберите тип торта.", reply_markup=kb.cake_type_kb(), parse_mode='HTML')
+    # await bot.send_message(chat_id=chat_id, text="Для начала выберите тип торта.", reply_markup=kb.cake_type_kb(), parse_mode='HTML')
 
 
 @rt.callback_query(F.data == 'cakes')
