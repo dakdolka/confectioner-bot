@@ -68,8 +68,13 @@ header {
     background-color: rgba(0, 0, 0, 0);
     color: #6b6b6b;
     font-size: 22px;
-
+    
 }
+
+.bt:hover {
+    cursor: pointer;
+}
+
 #btn1 {
     margin-right: 60px;
 }
@@ -122,4 +127,15 @@ header {
     padding: 7px 10px 7px 10px;
     margin: 10px;
     font-size: 14px;
+}
+
+.hide {
+    display: none;
+}
+
+.orders {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 0 61px 0 61px;
 }
