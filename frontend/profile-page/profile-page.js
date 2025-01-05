@@ -1,14 +1,14 @@
 async function getResponce(content){
-    // let response = await fetch('https://jsonplaceholder.typicode.com/photos')
-    // var content = await response.json()
+    let response = await fetch('https://jsonplaceholder.typicode.com/photos')
+    var content = await response.json()
 
-    // await console.log(content[content[1].id])
+    await console.log(content[content[1].id])
 
     const orders = document.querySelector('.orders')
     const skills = document.querySelector('.skills')
     const works = document.querySelector('.works')
     function works_func(){ // генерация карточек в раздел мои работы
-        for(let i = 0; i < 2; i++){
+        for(let i = 0; i < 10; i++){
           console.log(content[i].id)
           const card = document.createElement('div') //КАРТОЧКА
           card.classList.add('card')
@@ -32,7 +32,7 @@ async function getResponce(content){
 
     //при первом нажатии отработать, а потом просто hide 
     function orders_func(){ // генерация карточек в раздел заказы (отображается только у самого кондитера)
-      for(let i = 0; i < 2; i++){
+      for(let i = 0; i < 10; i++){
         const card = document.createElement('div') //КАРТОЧКА
         card.classList.add('card')
         const img_in_card = document.createElement('img') //КАРТИНКА
@@ -53,7 +53,7 @@ async function getResponce(content){
     }
 
     function skills_func(){ // генерация карточек в раздел навыки 
-      for(let i = 0; i < 2; i++){
+      for(let i = 0; i < 10; i++){
         const card = document.createElement('div') //КАРТОЧКА
         card.classList.add('card')
         const img_in_card = document.createElement('img') //КАРТИНКА
@@ -138,11 +138,25 @@ async function conditer(cond) {
   function soc_med(){ 
     console.log(cond[0].social_media.length) //object hasn't param lenght 
     for(let i = 0; i < cond[0].social_media.length; i++){
-      const soc_url = document.createElement("a")
-      soc_url.classList.add("soc_url")
-      soc_url.innerHTML = cond[0].social_media[i][0]
-      soc_url.innerHTML = cond[0].social_media[i][1]
-      soc_url.href = "#"
+      const soc_url = document.createElement("div")
+      soc_url.classList.add("soc_url") //-?-
+      const p = document.createElement("p")
+      p.innerHTML = `${cond[0].social_media[i][0]}: `
+      soc_url.append(p)
+
+      const field = document.createElement("div")
+      field.classList.add("field")
+      soc_url.append(field)
+      
+      const data_sm = document.createElement("div")
+      data_sm.id = "data_sm"
+      data_sm.innerHTML = cond[0].social_media[i][1]
+      field.append(data_sm)
+      const img = document.createElement("img")
+      img.classList.add("copy")
+      img.src = "./copy.png"
+      field.append(img)
+
       social_bt.append(soc_url)
       console.log(cond[0].social_media[i][0])
     }
