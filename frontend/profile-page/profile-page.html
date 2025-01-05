@@ -12,11 +12,20 @@
 <body>
     <header>
         <div class="block1">
-            <div class="img"><img src="./cat.png" alt="/" class = "ava"></div>
+            <div class="img"><img alt="..." class = "ava"></div>
             <div class="inf">
                 <div class="username">Имя Фамилия</div>
-                <div class="social-media">Мои соцсети</div>
-                <div class="descript">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Reprehenderit quis alias doloribus ipsam illum! Necessitatibus!</div>
+                <!-- выпадающее меню с соцсетями -->
+                <div class="dropdown"> 
+                    <button class="social-media">Мои соцсети</button>
+                    <div class="dropdown-content"> 
+                      <a href="#" class="soc_url">tiktok:</a>
+                      <a href="#" class="soc_url">inst:</a>
+                      <!-- сделать красивые поля чтобы удобнее копипас делать -->
+                       <!-- при нажатии или при наведении? -->
+                    </div>
+                </div>
+                <div class="descript"></div>
             </div>
         </div>
         <button class="edit-bt">Изменить профиль</button>
@@ -34,7 +43,7 @@
         </div>
          <!-- onclick="active_navbar(2)" -->
         
-        <div class="works">    
+        <div class="works container">    
             <!-- ряды карточек создаются в js -->
             <!-- <div class="card">
                 <div class="img"></div>
@@ -46,10 +55,19 @@
         </div>
 
 
-        <div class="orders"></div>
-        <div class="skills"></div>
+        <div class="orders container"> 
+
+        </div>
+        <div class="skills container"></div>
     </main>
     <footer></footer>
     <script src="./profile-page.js"></script>
 </body>
 </html>
+
+<!-- ? как сделать разные ветки для кондитера и заказчикаа??? этот файл именно для кондитера --> 
+
+<!-- раздел заказов  -->
+
+<!-- ideas: втроенный чатик? вместо обязательного tg -->
+
