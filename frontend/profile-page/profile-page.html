@@ -11,45 +11,61 @@
 </head>
 <body>
     <header>
-        <div class="img"><img src="./cat.png" alt="/"></div>
-        <div class="inf">
-            <div class="username">Имя Фамилия</div>
-            <div class="social-media">Мои соцсети</div>
-            <div class="descript">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Reprehenderit quis alias doloribus ipsam illum! Necessitatibus!</div>
+        <div class="block1">
+            <div class="img"><img alt="..." class = "ava"></div>
+            <div class="inf">
+                <div class="username"></div>
+                <!-- выпадающее меню с соцсетями -->
+                <div class="dropdown"> 
+                    <button class="social-media">Мои соцсети</button>
+                    <div class="dropdown-content"> 
+                      <!-- сделать красивые поля чтобы удобнее копипас делать -->
+                       <!-- при нажатии или при наведении? -->
+                    </div>
+                </div>
+                <div class="descript"></div>
+            </div>
         </div>
-        <div class="edit-bt">
-
-        </div>
+        <button class="edit-bt">Изменить профиль</button>
     </header>
 
 
     <main>
+        
         <div class="navbar">
             <div class="btns">
-                <button id="btn1"></button>
-                <button id="btn2"></button>
+                <button id="btn1" class="bt active">Мои работы</button>
+                <button id="btn2" class="bt" >Заказы</button>
             </div>
-            <button id="btn3"></button>
+            <button id="btn3" class="bt">Мои навыки</button>
         </div>
+         <!-- onclick="active_navbar(2)" -->
         
-        
-        <div class="works">    
+        <div class="works container">    
             <!-- ряды карточек создаются в js -->
-            <div class="card">
+            <!-- <div class="card">
                 <div class="img"></div>
                 <div class="inf">
                     <div class="name"></div>
                     <button class="description"></button>
                 </div>
-            </div>
+            </div> -->
         </div>
 
 
-        <div class="orders">
+        <div class="orders container"> 
 
         </div>
+        <div class="skills container"></div>
     </main>
     <footer></footer>
-    
+    <script src="./profile-page.js"></script>
 </body>
 </html>
+
+<!-- ? как сделать разные ветки для кондитера и заказчикаа??? этот файл именно для кондитера --> 
+
+<!-- раздел заказов  -->
+
+<!-- ideas: втроенный чатик? вместо обязательного tg -->
+
