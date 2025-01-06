@@ -1,9 +1,13 @@
 from typing import Any, Optional
 from typing import Annotated
+from pydantic_core import validate_core_schema
 from sqlalchemy import Table, Column, Integer, String, MetaData, Numeric, ForeignKey, text, BigInteger, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.data.database.database import Base
 from datetime import datetime
+from sqlalchemy.orm import validates
+
+import bcrypt
 
 
 
@@ -150,3 +154,30 @@ class TDetailOrdersORM(Base):
         back_populates='detail_orders'
     )
     forder_cake_id = Column(Integer, ForeignKey('tpossible_cake.fid'))
+    
+    
+    
+class TestRegORM(Base):
+    __tablename__ = 'test_reg'
+
+    fuserid: Mapped[intpk]
+    fname: Mapped[str]
+    fpassword: Mapped[str]
+    
+    @validates('fpassword')
+    def hash_password(self, key, password):
+        """
+        Хеширование пароля перед сохранением в базе данных.
+        """
+        if password:
+            # Генерация соли
+            salt = bcrypt.gensalt()
+            # Хеширование пароля с солью
+            return bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
+        return password
+
+    def check_password(self, password: str) -> bool:
+        """
+        Проверка пароля, переданного пользователем, с сохранённым хешем.
+        """
+        return bcrypt.checkpw(password.encode('utf-8'), self.fpassword.encode('utf-8'))
