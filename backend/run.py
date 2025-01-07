@@ -13,7 +13,7 @@ import uvicorn
 from starlette.middleware.cors import CORSMiddleware
 from app.frontend_requests.views import router as frontend_router
 from main import app
-
+from app.auth.views import router as auth_router
 import multiprocessing
 
 
@@ -25,6 +25,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.include_router(frontend_router)
+app.include_router(auth_router)
 
 
 class Bot_creator():
