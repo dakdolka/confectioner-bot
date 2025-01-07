@@ -6,6 +6,10 @@
     font-family: "Inter";
     font-weight: bold;
 }
+html {
+    scrollbar-width: none;
+}
+
 /* верхняя часть */
 header { 
     display: flex;
@@ -48,7 +52,7 @@ header {
     position: absolute;
     background-color: rgba(241, 241, 241,1);
     z-index: 1;
-    min-width: 230px;
+    min-width: 350px;
 }
   
 .soc_url {
@@ -78,6 +82,9 @@ header {
 
 .copy {
     width: 15px;
+    &:hover {
+        cursor: pointer;
+    }
 }
 /* end */
 
@@ -85,7 +92,7 @@ header {
     margin-right: 7px;
     margin-left: 0px;
     padding: 0px 2px 0px 0px; 
-    border-radius: 2px;
+    font-weight: normal;
 }
 
 .descript {
@@ -194,8 +201,47 @@ header {
     display: none;
 }
 
+.inf_block {
+    margin: 0px 61px 20px 61px;
+    background-color: rgba(0, 0, 0, 0.05);
+    padding: 20px 10px;
+    color:rgba(0, 0, 0, 0.7);
+}
 
+.i {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    /* justify-content: space-between; */
+    background-color: rgb(101, 237, 255); /* ЗАМЕНИТЬ */
+    padding: 20px;
+    /* border-radius: 15px ; */
+    margin-bottom: 20px;
+}
 
+.arr {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    
+}
 
+.opt {
+    font-weight: normal;
+    margin-top: 10px;
+}
 
+.plus {
+    color: rgba(0, 0, 0, 0.7);
+    border-style: none;
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 5px 8px;
+    font-size: 14px;
+    font-weight:bolder;
+
+    &:hover{
+        cursor: pointer;
+    }
+}
 

@@ -1,14 +1,14 @@
 async function getResponce(content){
-    let response = await fetch('https://jsonplaceholder.typicode.com/photos')
-    var content = await response.json()
+    // let response = await fetch('https://jsonplaceholder.typicode.com/photos')
+    // var content = await response.json()
 
-    await console.log(content[content[1].id])
+    // await console.log(content[content[1].id])
 
     const orders = document.querySelector('.orders')
     const skills = document.querySelector('.skills')
     const works = document.querySelector('.works')
     function works_func(){ // генерация карточек в раздел мои работы
-        for(let i = 0; i < 10; i++){
+        for(let i = 0; i < 2; i++){
           console.log(content[i].id)
           const card = document.createElement('div') //КАРТОЧКА
           card.classList.add('card')
@@ -21,6 +21,10 @@ async function getResponce(content){
           const card_more = document.createElement('button') //ПОДРОБНЕЕ
           card_more.classList.add('card_more') 
           card_more.innerHTML = 'подробнее...'
+          card_more.addEventListener(onclick, () => {
+            console.log("benger");
+          }) // ?!!!!
+          
           
           card.append(img_in_card)
           card.append(card_name)
@@ -32,7 +36,7 @@ async function getResponce(content){
 
     //при первом нажатии отработать, а потом просто hide 
     function orders_func(){ // генерация карточек в раздел заказы (отображается только у самого кондитера)
-      for(let i = 0; i < 10; i++){
+      for(let i = 0; i < 2; i++){
         const card = document.createElement('div') //КАРТОЧКА
         card.classList.add('card')
         const img_in_card = document.createElement('img') //КАРТИНКА
@@ -51,29 +55,6 @@ async function getResponce(content){
       }
       orders.classList.add("render")
     }
-
-    function skills_func(){ // генерация карточек в раздел навыки 
-      for(let i = 0; i < 10; i++){
-        const card = document.createElement('div') //КАРТОЧКА
-        card.classList.add('card')
-        const img_in_card = document.createElement('img') //КАРТИНКА
-        img_in_card.classList.add('img_in_card')
-        img_in_card.src = "./otter.jpg"
-        const card_name = document.createElement('div') //НАЗВАНИЕ
-        card_name.innerHTML = content[i].title
-        card_name.classList.add('card_name')
-        const card_more = document.createElement('button') //ПОДРОБНЕЕ
-        card_more.classList.add('card_more') 
-        card_more.innerHTML = 'подробнее...'
-        card.append(img_in_card)
-        card.append(card_name)
-        card.append(card_more)
-        skills.append(card)
-      }
-      skills.classList.add("render")
-    }
-
-
 
     function active_navbar(){ //включает видимость или генерацию карточек
       const arr = document.querySelectorAll(".bt")
@@ -111,7 +92,7 @@ async function getResponce(content){
               orders.classList.add('hide')
             }
             else {
-              skills_func()
+              
               works.classList.add('hide')
               skills.classList.remove('hide')
               orders.classList.add('hide')
@@ -122,10 +103,6 @@ async function getResponce(content){
     
     }
     active_navbar()
-
-    
-
-
 }
 
 
@@ -162,6 +139,33 @@ async function conditer(cond) {
     }
   }
   soc_med()
+  function skills() { //глобально надо бы, чтоюы можно было как-то запустить из первой функции
+    const for_i = document.querySelector(".for_i")
+    const block_i_cakes = document.createElement("div")
+    block_i_cakes.classList.add("i")
+    const arr_cakes = document.createElement("div")
+    arr_cakes.classList.add("arr")
+    block_i_cakes.innerHTML = "Виды тортов"
+    for(let k = 0; k < cond[0].skills.cakes.length; k++){
+      console.log(cond[0].skills.cakes)
+      const opt = document.createElement('div')
+      opt.classList.add("opt")
+      opt.innerHTML = cond[0].skills.cakes[k]
+      arr_cakes.append(opt)
+    }
+    
+    const plus = document.createElement("button")
+    plus.classList.add("plus")
+    plus.classList.add("opt")
+
+    plus.innerHTML = "+ добавить"
+    arr_cakes.append(plus)
+    block_i_cakes.append(arr_cakes)
+
+    for_i.append(block_i_cakes)
+  } //спросить как сделать глобальнее
+  //ыа, чет я не понимаю как это блин делать вообще
+  skills()
 }
 
 
@@ -188,15 +192,29 @@ cond = [
     "descript": "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Reprehenderit quis alias doloribus ipsam illum! Necessitatibus!", 
     "ava": "./cat.png", //?????
     "social_media": 
-        // [
-        //   {"tik_tok": "lala"},
-        //   {"inst": "dd"}
-        // ]
         [
-          ["tik_tok", "lala"],
-          ["inst", "dd"]
-        ]
+          ["tik_tok", "lala_lisa"],
+          ["inst", "@lalalisa"]
+        ],
+    "skills": {
+      "cakes": [
+        "мусс",
+        "блиннный",
+        "шоколадный коржик"
+      ],
+      "decor": [
+        "шоколадные фигурки",
+        "велюр",
+        "вафельная бумага"
+      ],
+      "feeling": [
+        "киви",
+        "мята",
+        "маскарпоне"
+      ]
       
+    }
+
   }
 ]
 getResponce(cont)
