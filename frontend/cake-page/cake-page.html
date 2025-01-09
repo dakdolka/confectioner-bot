@@ -5,10 +5,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CAKE_PAGE</title>
     <link rel="stylesheet" href="./cake-page.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+
 </head>
 <body>
-    <header></header>
-    <main></main>
+    <header>
+        <div class="left_btns btns">
+            <div class="logo"><img alt="..." class="logo_img"></div>
+            <button class="bt_navbar">О нас</button>
+            <button class="bt_navbar">ТОП-кондитеры</button>
+            <!-- <button class="bt_navbar">day/night</button> -->
+
+        </div>
+        <div class="right_btns btns">
+            <button class="bt_navbar">Подписки</button>
+            <button class="bt_navbar">История заказов</button>
+            <button class="bt_navbar account"></button>
+        </div>
+    </header>
+    <main>
+        <div class="main_nav">
+            <div class="h1">Создайте свой уникальный торт!</div>
+            <div class="skip_btns">
+                <button class="main_nav_bt">К выбору кондитера ></button>
+                <button class="main_nav_bt">К готовым изделиям ></button>
+            </div>
+        </div>
+        <div class="choice_cont">
+            <div class="generation">
+                <div class="choice">
+                    <div class="h2" style="margin: 30px 30px 0 30px;">Выбор №1</div>
+                </div>
+            </div>
+            <div class="btns" style="display: flex; justify-content: space-between; width: 100%;">
+                <button class="back">< назад </button>
+                <button class="next">продолжить ></button>
+            </div>
+        </div>
+    </main>
     <footer></footer>
+    <script src="./cake-page.js"></script>
 </body>
 </html>
