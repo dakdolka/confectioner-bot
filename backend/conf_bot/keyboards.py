@@ -47,6 +47,7 @@ cancel = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text='От�
 # 												   InlineKeyboardButton(text='Исправить', callback_data='changeProfile')]])
 
 skip1 = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text='Пропустить', callback_data='skip1')]])
+skip2 = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text='Пропустить', callback_data='skip2')]])
 
 approveProfile = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text='Отмена', callback_data='changeProfileCancel')]])
 

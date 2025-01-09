@@ -44,6 +44,7 @@ class Reg(StatesGroup):
 	changeAbout = State()
 	approve_text = State()
 	approve_mes_id = State()
+	photo = State()
 
 class Cake(StatesGroup):
 	name = State()
@@ -118,15 +119,28 @@ async def name(message: Message, state: FSMContext):
 async def exp(message: Message, state: FSMContext):
 	userid = message.from_user.id
 	print(userid)
-	await state.set_state(Reg.aboutCond)
-	await message.answer(text='Расскажите о себе:', reply_markup=kb.skip1)
+	await state.set_state(Reg.photo)
+	await message.answer(text='Аватарка вашего профиля', reply_markup=kb.skip1)
 	await state.update_data(fexp=message.text)
+ 
+@router.message(state=Reg.photo, content_types=['photo'])
+async def photo(message: Message, state: FSMContext):
+	await state.update_data(fphoto=message.photo[0].file_id)
+	print(message.photo[0].file_id)
+	# await message.answer_photo(message.photo[0].file_id)
+	await state.set_state(Reg.aboutCond)
+	await message.answer(text='Расскажите о себе:', reply_markup=kb.skip2)
 
 
-@router.callback_query(F.data == 'skip1')
+@router.callback_query(F.data == 'skip2')
 async def add_social1(callback: CallbackQuery, state: FSMContext):
 	await state.update_data(fabout='')
 	await callback.message.edit_text(text='Добавьте свои социальные сети', reply_markup=await kb.social())
+ 
+@router.callback_query(F.data == 'skip1')
+async def add_social2(callback: CallbackQuery, state: FSMContext):
+	await state.update_data(fphoto='')
+	await callback.message.edit_text(text='РАсскажите о себе:', reply_markup=await kb.skip2())
 
 
 @router.message(Reg.aboutCond)
@@ -172,6 +186,8 @@ async def add_social_link(callback: CallbackQuery, state: FSMContext, callback_d
 	elif callback_data.smType == 'Instagram':
 		await state.set_state(Reg.Instagram)
 	await callback.message.edit_text(text=f'Отправьте ссылку на Ваш {callback_data.smType}', reply_markup=kb.cancel)
+ 
+ 
 
 
 @router.callback_query(F.data == 'approve')

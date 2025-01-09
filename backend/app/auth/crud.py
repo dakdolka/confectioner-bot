@@ -15,7 +15,7 @@ def login(username: str, password: str) -> TestRegORM:
         )
         result = session.execute(query)
         user = result.scalar()
-        if user.check_password(password):
+        if user and user.check_password(password):
             return user
         return 'Access Denied'
     
@@ -25,4 +25,4 @@ def register(username: str, password: str) -> TestRegORM:
         session.add(user)
         session.commit()
         session.refresh(user)
-        return user
+        return user 

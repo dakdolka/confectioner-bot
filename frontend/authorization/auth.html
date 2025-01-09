@@ -9,15 +9,15 @@
 <body>
     <div class="form-container">
         <h2>Авторизация</h2>
-        <form action="http://localhost:8000/auth/login" method="GET" class="form-container">
+        <form action="http://localhost:8000/auth/login" method="GET" class="form-container">  <!-- TODO заменить на нужный URL-->
           <label for="username" class="form-label">Имя пользователя:</label>
           <input type="text" id="username" name="username" required placeholder="Введите имя" calss="form-input">
     
           <label for="password" class="form-label">Пароль:</label>
           <input type="password" id="password" name="password" required placeholder="Введите пароль" class="form-input">
     
-          <button type="submit" class="form-button">Войти</button>
-          <p>Нет аккаунта? <a href="./registration.html">Зарегистрируйтесь</a></p>
+          <button type="submit" class="form-button" id="enter">Войти</button>
+          <p>Нет аккаунта? <a href="./registration.html">Зарегистрируйтесь</a></p> 
         </form>
       </div>
 </body>
