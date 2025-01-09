@@ -31,7 +31,7 @@ main {
     border-radius: 5px;
     padding: 5px 8px;
     font-size: 16px;
-    font-weight:bolder;
+    font-weight:700;
     margin: 0 10px;
     &:hover{
         color: rgba(0, 0, 0, 0.9);
@@ -63,7 +63,7 @@ main {
     border-radius: 5px;
     padding: 7px 10px;
     font-size: 16px;
-    font-weight:bolder;
+    font-weight:700;
     margin: 10px 0px;
     &:hover{
         color: rgba(0, 0, 0, 0.9);
@@ -100,7 +100,7 @@ main {
     border-radius: 5px;
     padding: 7px 10px;
     font-size: 16px;
-    font-weight:bolder;
+    font-weight:700;
     margin: 10px 0px;
     &:hover{
         color: rgba(0, 0, 0, 0.9);
@@ -118,7 +118,7 @@ main {
     border-radius: 5px;
     padding: 7px 10px;
     font-size: 16px;
-    font-weight:bolder;
+    font-weight:700;
     margin: 10px 0px;
     &:hover{
         color: rgba(0, 0, 0, 0.9);
@@ -130,16 +130,16 @@ main {
 
 .next {
     color: rgba(0, 0, 0, 0.7);
-    background-color: rgb(82, 180, 255);
+    background-color: rgb(141, 181, 255);
     border-style: none;
     border-radius: 5px;
     padding: 7px 10px;
     font-size: 16px;
-    font-weight:bolder;
+    font-weight:700;
     margin: 10px 0px;
     &:hover{
         color: rgba(0, 0, 0, 0.9);
-        background-color: rgb(46, 164, 255);
+        background-color: rgb(121, 168, 255);
         cursor: pointer;
     }
 }

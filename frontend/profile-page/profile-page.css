@@ -173,6 +173,8 @@ header {
 .img_in_card {
     width: 250px;
     height: 200px;
+    object-position: center;
+    object-fit: cover;
 }
 
 .card_name {
@@ -213,7 +215,7 @@ header {
     flex-direction: column;
     align-items: start;
     /* justify-content: space-between; */
-    background-color: rgb(101, 237, 255); /* ЗАМЕНИТЬ */
+    background-color: rgb(141, 181, 255); /* ЗАМЕНИТЬ */
     padding: 20px;
     /* border-radius: 15px ; */
     margin-bottom: 20px;
@@ -238,10 +240,60 @@ header {
     background-color: rgba(255, 255, 255, 0.7);
     padding: 5px 8px;
     font-size: 14px;
-    font-weight:bolder;
+    font-weight:700;
 
     &:hover{
         cursor: pointer;
     }
 }
 
+
+
+.order {
+    display: flex;
+    flex-direction: column;
+    background-color: #eaeaea;
+    padding: 10px;
+}
+
+.date {
+    font-weight: normal;
+    color: rgb(0, 0, 0);
+    padding: 7px;
+    background-color: rgba(141, 181, 255, 0.5);
+}
+
+.bottom_btns {
+    display: flex;
+    justify-content: space-between;
+}
+
+.bottom_btns button {
+    background-color: rgb(141, 181, 255);
+    border-style: none;
+    border-radius: 5px;
+    padding: 6px;
+    font-weight: normal;
+    &:hover{
+        cursor: pointer;
+    }
+}
+
+.inf_order {
+    margin: 20px 0;
+    
+}
+
+.cost {
+    background-color: #d5d5d5;
+    border-style: none;
+    border-radius: 5px;
+    padding: 6px;
+    font-weight: normal;
+}
+
+.ord_cond {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}

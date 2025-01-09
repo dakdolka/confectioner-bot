@@ -16,7 +16,8 @@ function choice(data) {
     const opt_1 = document.createElement("button")
     opt_1.classList.add("opt")
     opt_1.innerHTML = "Первый вариант"
-    opt_1.addEventListener(onclick, () => {
+    opt_1.addEventListener("click", () => {
+        console.log("BENGER")
         arr[0].classList.add('hide') 
     })
 
@@ -24,7 +25,7 @@ function choice(data) {
     const opt_2 = document.createElement("button")
     opt_2.classList.add("opt")
     opt_2.innerHTML = "Второй вариант"
-    opt_2.addEventListener(onclick, () => {
+    opt_2.addEventListener("click", () => {
         arr[0].classList.add('hide')
     })
 
@@ -32,7 +33,7 @@ function choice(data) {
     const opt_3 = document.createElement("button")
     opt_3.classList.add("opt")
     opt_3.innerHTML = "Третий вариант"
-    opt_3.addEventListener(onclick, () => {
+    opt_3.addEventListener("click", () => {
         arr[0].classList.add('hide')
     })
 

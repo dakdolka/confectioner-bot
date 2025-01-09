@@ -1,15 +1,14 @@
-async function getResponce(content){
-    // let response = await fetch('https://jsonplaceholder.typicode.com/photos')
-    // var content = await response.json()
+async function getResponce(content, orders_data){
+    let response = await fetch('https://jsonplaceholder.typicode.com/photos')
+    var content = await response.json()
 
-    // await console.log(content[content[1].id])
+    await console.log(content[content[1].id])
 
     const orders = document.querySelector('.orders')
     const skills = document.querySelector('.skills')
     const works = document.querySelector('.works')
     function works_func(){ // генерация карточек в раздел мои работы
-        for(let i = 0; i < 2; i++){
-          console.log(content[i].id)
+        for(let i = 0; i < 10; i++){
           const card = document.createElement('div') //КАРТОЧКА
           card.classList.add('card')
           const img_in_card = document.createElement('img') //КАРТИНКА
@@ -21,7 +20,7 @@ async function getResponce(content){
           const card_more = document.createElement('button') //ПОДРОБНЕЕ
           card_more.classList.add('card_more') 
           card_more.innerHTML = 'подробнее...'
-          card_more.addEventListener(onclick, () => {
+          card_more.addEventListener("click", () => {
             console.log("benger");
           }) // ?!!!!
           
@@ -34,24 +33,38 @@ async function getResponce(content){
     }
     works_func()
 
-    //при первом нажатии отработать, а потом просто hide 
     function orders_func(){ // генерация карточек в раздел заказы (отображается только у самого кондитера)
-      for(let i = 0; i < 2; i++){
-        const card = document.createElement('div') //КАРТОЧКА
-        card.classList.add('card')
-        const img_in_card = document.createElement('img') //КАРТИНКА
-        img_in_card.classList.add('img_in_card')
-        img_in_card.src = "./otter.jpg"
-        const card_name = document.createElement('div') //НАЗВАНИЕ
-        card_name.innerHTML = content[i].title
-        card_name.classList.add('card_name')
-        const card_more = document.createElement('button') //ПОДРОБНЕЕ
-        card_more.classList.add('card_more') 
-        card_more.innerHTML = 'подробнее...'
-        card.append(img_in_card)
-        card.append(card_name)
-        card.append(card_more)
-        orders.append(card)
+      for(let i = 0; i < orders_data.length; i++){
+        const order = document.createElement('div') 
+        order.classList.add('order')
+        const date = document.createElement('div') 
+        date.innerHTML = `(i) дедлайн: ${orders_data[i].date}`
+        date.classList.add('date')
+        const inf_order = document.createElement('div') 
+        inf_order.classList.add('inf_order')
+        for(let k = 0; k < orders_data[i].inf.length; k++){
+          const cake_param = document.createElement("div")
+          cake_param.classList.add("cake_param")
+          cake_param.innerHTML = `${orders_data[i].inf[k][0]}: ${orders_data[i].inf[k][1]}`
+          inf_order.append(cake_param)
+        }
+        const bottom_btns = document.createElement('div') 
+        bottom_btns.classList.add('bottom_btns') 
+        const chat = document.createElement("button")
+        chat.classList.add('chat')
+        chat.innerHTML = "чат"
+        bottom_btns.append(chat)
+        const cost = document.createElement("div")
+        cost.classList.add("cost")
+        cost.innerHTML += `${orders_data[i].cost} P`
+        bottom_btns.append(cost)
+        const ord_cond = document.createElement("div")
+        ord_cond.classList.add("ord_cond")
+        order.append(date)
+        ord_cond.append(inf_order)
+        ord_cond.append(bottom_btns)
+        order.append(ord_cond)
+        orders.append(order)
       }
       orders.classList.add("render")
     }
@@ -169,7 +182,7 @@ async function conditer(cond) {
 }
 
 
-cont = [
+cont = [ //константы с тортиками
     {
       "id": 1,
       "title": "accusamus beatae ad facilis cum similique qui sunt",
@@ -185,7 +198,7 @@ cont = [
     },
 ]
 
-cond = [
+cond = [ //константы кондитера
   {
     "id": 10929878,
     "name": "Name Surname",
@@ -217,5 +230,55 @@ cond = [
 
   }
 ]
-getResponce(cont)
+
+orders_data = [
+  {
+    "cost": "1000",
+    "date": "13.01",
+    "inf": [
+      ["тип торта", "муссовый"],
+      ["начинка", "вишня"],
+      ["декор", "шоколадные фигурки"]
+
+      ]
+    
+  },
+  {
+    "cost": "13000",
+    "date": "14.01",
+    "inf": [
+      ["тип торта", "блинный"],
+      ["крем", "сметанный"],
+      ["добавки в крем", "смородина"],
+      ["декор", "цветы из крема"]
+
+      ]
+    
+  },
+  {
+    "cost": "13000",
+    "date": "14.01",
+    "inf": [
+      ["тип торта", "блинный"],
+      ["крем", "сметанный"],
+      ["добавки в крем", "смородина"],
+      ["декор", "цветы из крема"]
+
+      ]
+    
+  },
+  {
+    "cost": "13000",
+    "date": "14.01",
+    "inf": [
+      ["тип торта", "блинный"],
+      ["крем", "сметанный"],
+      ["добавки в крем", "смородина"],
+      ["декор", "цветы из крема"]
+
+      ]
+    
+  }
+]
+getResponce(cont, orders_data)
 conditer(cond)
