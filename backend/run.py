@@ -1,4 +1,3 @@
-import aiogram
 import asyncio
 from aiogram import Bot, Dispatcher, Router
 from config import settings
@@ -6,12 +5,9 @@ from user_bot.handlers import rt as user_rt, bot as user_bot
 from conf_bot.handlers import router as conf_rt, bot as conf_bot
 from app.data import SyncORM
 
-# SyncORM.create_table()
-# SyncORM.insert_data()
-from fastapi import FastAPI
 import uvicorn
 from starlette.middleware.cors import CORSMiddleware
-from app.frontend_requests.views import router as frontend_router
+from app.web_requests.views import router as frontend_router
 from main import app
 from app.auth.views import router as auth_router
 import multiprocessing
