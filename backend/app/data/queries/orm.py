@@ -106,7 +106,39 @@ class SyncORM:
             res = session.execute(query).scalars().all()
                 
             return [elem.__dict__['fcake_ingr'] for elem in res]
+
     
+    @staticmethod
+    def get_conditer_info(conditer_id):
+        with session_factory() as session:
+            query = (
+                select(ConditersORM)
+                .where(ConditersORM.fuserid == cast(conditer_id, BigInteger))
+                .options(selectinload(ConditersORM.fproducts))
+            )
+            conditer = session.execute(query).scalars().first()
+
+            if not conditer:
+                return None
+
+            conditer_info = {
+                'img': 'url',
+                'name': conditer.fname,
+                'experience': conditer.fexp,
+                'creation_time': conditer.fcreatingtime,
+                'youtube': conditer.fyoutube,
+                'instagram': conditer.finstagram,
+                'vk': conditer.fvk,
+                'cakes': [
+                    {
+                        'name': product.fproduct_name,
+                        'photo': 'url',
+                        'description': 'Description',
+                    }
+                    for product in conditer.fproducts
+                ]
+            }
+            return conditer_info
 
 
     @staticmethod
