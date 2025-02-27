@@ -183,10 +183,22 @@ def cake_ingr_tastes_kb(cake_type, cake_ingr, t_tastes):
     kb = InlineKeyboardBuilder()
     for elem in SyncORM.getcake_ingr_taste(cake_type, cake_ingr):
         if elem[0] in t_tastes:
-            kb.add(InlineKeyboardButton(text='✅' + str(elem[0]), callback_data=Cake(action='tastes', what=f'{elem[0]}', dop=str(cake_ingr), index=str(elem[1])).pack()))
+            kb.add(InlineKeyboardButton(text='✅' + str(elem[0]), callback_data=Cake(
+                action='tastes',
+                what=f'{elem[0]}',
+                dop=str(cake_ingr),
+                index=str(elem[1])).pack()))
         else:
-            kb.add(InlineKeyboardButton(text=str(elem[0]), callback_data=Cake(action='tastes', what=f'{elem[0]}', dop=str(cake_ingr), index=str(elem[1])).pack()))
-    kb.row(InlineKeyboardButton(text='Подтвердить ✅', callback_data=Cake(action='confirm_tastes', what=f'{cake_ingr}', dop = str(cake_ingr), index='').pack()))
+            kb.add(InlineKeyboardButton(text=str(elem[0]), callback_data=Cake(
+                action='tastes',
+                what=f'{elem[0]}',
+                dop=str(cake_ingr),
+                index=str(elem[1])).pack()))
+    kb.row(InlineKeyboardButton(text='Подтвердить ✅', callback_data=Cake(
+        action='confirm_tastes',
+        what=f'{cake_ingr}',
+        dop = str(cake_ingr),
+        index='').pack()))
     return kb.adjust(2).as_markup()
 
 def kb_for_approve():

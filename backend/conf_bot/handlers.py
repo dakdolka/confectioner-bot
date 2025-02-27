@@ -123,7 +123,7 @@ async def exp(message: Message, state: FSMContext):
 	await message.answer(text='Аватарка вашего профиля', reply_markup=kb.skip1)
 	await state.update_data(fexp=message.text)
  
-@router.message(state=Reg.photo, content_types=['photo'])
+@router.message(Reg.photo)
 async def photo(message: Message, state: FSMContext):
 	await state.update_data(fphoto=message.photo[0].file_id)
 	print(message.photo[0].file_id)
@@ -140,7 +140,7 @@ async def add_social1(callback: CallbackQuery, state: FSMContext):
 @router.callback_query(F.data == 'skip1')
 async def add_social2(callback: CallbackQuery, state: FSMContext):
 	await state.update_data(fphoto='')
-	await callback.message.edit_text(text='РАсскажите о себе:', reply_markup=await kb.skip2())
+	await callback.message.edit_text(text='Расскажите о себе:', reply_markup=await kb.skip2())
 
 
 @router.message(Reg.aboutCond)

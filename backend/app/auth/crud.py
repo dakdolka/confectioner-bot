@@ -11,7 +11,6 @@ def login(username: str, password: str) -> TestRegORM:
         query = (
             select(TestRegORM)
             .where(TestRegORM.fname == username)
-            
         )
         result = session.execute(query)
         user = result.scalar()
@@ -24,5 +23,5 @@ def register(username: str, password: str) -> TestRegORM:
         user = TestRegORM(fname=username, fpassword=password)
         session.add(user)
         session.commit()
-        session.refresh(user)
-        return user 
+        # session.refresh(user)
+        return user
