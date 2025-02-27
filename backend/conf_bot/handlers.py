@@ -140,7 +140,7 @@ async def add_social1(callback: CallbackQuery, state: FSMContext):
 @router.callback_query(F.data == 'skip1')
 async def add_social2(callback: CallbackQuery, state: FSMContext):
 	await state.update_data(fphoto='')
-	await callback.message.edit_text(text='Расскажите о себе:', reply_markup=await kb.skip2())
+	await callback.message.edit_text(text='Расскажите о себе:', reply_markup=kb.skip2)
 
 
 @router.message(Reg.aboutCond)

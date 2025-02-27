@@ -3,7 +3,6 @@ from app.data.database.database import sync_engine, session_factory
 from app.data.database.models import ConditersORM, TCakeORM, TproductORM, TPossibleCakeORM, TIngrTasteORM, TCakeIngrORM, TCakeTypeORM, TCanMakeORM
 from app.data.database.database import Base
 from sqlalchemy.orm import selectinload
-from app.data.queries.sorting import sort_prods
 
 
 class SyncORM:
@@ -107,29 +106,7 @@ class SyncORM:
             res = session.execute(query).scalars().all()
                 
             return [elem.__dict__['fcake_ingr'] for elem in res]
-    
 
-    @staticmethod
-    def get_result(filter_cake):
-        sort_prods_with_filter = sort_prods(filter_cake)
-        prods = {}
-        with session_factory() as session:
-            query = (
-                select(TproductORM)
-                .options(selectinload(TproductORM.fcakeparts))
-            )
-            res = session.execute(query).scalars().all()
-
-            for elem in res:
-                ingr_taste_dict = {}
-                for ingr in elem.fcakeparts:
-                    stats = ingr.fingrcomb
-                    ingr_taste_dict[stats.fcake_ingr] = stats.fingr_taste
-                prods[(elem.fproductid, (elem.fproduct_name, elem.fuserid))] = [stats.fcake_type, ingr_taste_dict]
-            
-            print(prods)
-            prods = list(map(lambda x: {'title': x[0][1][0], 'creator_id': x[0][1][1]}, sorted(prods.items(), key=sort_prods_with_filter)))
-            return prods
     
     @staticmethod
     def get_conditer_info(conditer_id):
@@ -162,6 +139,7 @@ class SyncORM:
                 ]
             }
             return conditer_info
+
 
     @staticmethod
     def get_ingr_taste(data):
