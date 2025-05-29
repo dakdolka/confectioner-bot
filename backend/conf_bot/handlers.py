@@ -12,21 +12,6 @@ import json
 # from DataBase import cursor, db
 
 
-	
-
-TypesDict = {
-	'Cake': {
-		'Муссовый': {
-			'Начинка': {'Яблочная': 'end', 'Лимонная': 'end'},
-			'Мусс': {'Черничный': 'end', 'Смородиновый': 'end'}
-		},
-		'Бисквитный': {
-			'Бисквит': {'a': 'end', 'b': 'end'},
-			'начинка': {'a': 'end', 'c': 'end'}
-		}
-	},
-	'Another': {}}
-
 cakeTypesTag = 'cakes_types_'
 router = Router()
 bot = Bot(token=settings.CONF_BOT_TOKEN)
@@ -115,18 +100,21 @@ async def name(message: Message, state: FSMContext):
 	await message.answer(text='Ваш опыт работы:')
 
 
+# @router.message(Reg.exp)
+# async def exp(message: Message, state: FSMContext):
+# 	userid = message.from_user.id
+# 	print(userid)
+# 	await state.set_state(Reg.photo)
+# 	await message.answer(text='Аватарка вашего профиля', reply_markup=kb.skip1)
+# 	await state.update_data(fexp=message.text)
+ 
 @router.message(Reg.exp)
-async def exp(message: Message, state: FSMContext):
+async def photo(message: Message, state: FSMContext):
 	userid = message.from_user.id
 	print(userid)
-	await state.set_state(Reg.photo)
-	await message.answer(text='Аватарка вашего профиля', reply_markup=kb.skip1)
 	await state.update_data(fexp=message.text)
- 
-@router.message(Reg.photo)
-async def photo(message: Message, state: FSMContext):
-	await state.update_data(fphoto=message.photo[0].file_id)
-	print(message.photo[0].file_id)
+	# await state.update_data(fphoto=message.photo[0].file_id)
+	# print(message.photo[0].file_id)
 	# await message.answer_photo(message.photo[0].file_id)
 	await state.set_state(Reg.aboutCond)
 	await message.answer(text='Расскажите о себе:', reply_markup=kb.skip2)
